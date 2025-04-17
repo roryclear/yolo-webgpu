@@ -10221,7 +10221,7 @@ var<uniform> INFINITY : f32;
     var alu24 = (select(0.0f,alu16,(0.0f<alu16))*select(0.0f,alu20,(0.0f<alu20)));
     var alu25 = (select(0.0f,alu17,(0.0f<alu17))*select(0.0f,alu21,(0.0f<alu21)));
     var alu26 = (select(0.0f,alu18,(0.0f<alu18))*select(0.0f,alu22,(0.0f<alu22)));
-    acc0 = ((((acc0|select(false,(bool((i32((0.45f<(alu23*(1/(((val5+val0)-alu23)+1e-06f)))))))),(((cast0+lidx0+alu13+1197)%1198)<599)))|select(false,(bool((i32((0.45f<(alu24*(1/(((val6+val0)-alu24)+1e-06f)))))))),(((alu14+1196)%1198)<599)))|select(false,(bool((i32((0.45f<(alu25*(1/(((val7+val0)-alu25)+1e-06f)))))))),(((alu14+1195)%1198)<599)))|select(false,(bool((i32((0.45f<(alu26*(1/(((val8+val0)-alu26)+1e-06f)))))))),(((alu14+1194)%1198)<599)));
+    acc0 = ((((acc0|select(false,(bool((i32((0.45f<(alu23*(1/((val5+val0)-alu23)))))))),(((cast0+lidx0+alu13+1197)%1198)<599)))|select(false,(bool((i32((0.45f<(alu24*(1/((val6+val0)-alu24)))))))),(((alu14+1196)%1198)<599)))|select(false,(bool((i32((0.45f<(alu25*(1/((val7+val0)-alu25)))))))),(((alu14+1195)%1198)<599)))|select(false,(bool((i32((0.45f<(alu26*(1/((val8+val0)-alu26)))))))),(((alu14+1194)%1198)<599)));
   }
   data0[alu0] = (f32((acc0!=true)));
 }`;
