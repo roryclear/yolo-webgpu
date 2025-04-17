@@ -10115,14 +10115,15 @@ var<uniform> INFINITY : f32;
   data0[(alu13+14)] = acc8;
 }`;
 
-const E_1183_3n5 = `fn nan() -> f32 { let bits = 0xffffffffu; return bitcast<f32>(bits); }
+const E_25_3_4 = `fn nan() -> f32 { let bits = 0xffffffffu; return bitcast<f32>(bits); }
 @group(0) @binding(0)
 var<uniform> INFINITY : f32;
 @group(0) @binding(1)var<storage,read_write>data0:array<f32>;
 @group(0) @binding(2)var<storage,read_write>data1:array<f32>;
-@compute @workgroup_size(1) fn main(@builtin(workgroup_id) gindex: vec3<u32>,@builtin(local_invocation_id) lindex: vec3<u32>) {
-  var gidx0 = i32(gindex.x); /* 1183 */
-  var alu0 = (gidx0*18);
+@compute @workgroup_size(3) fn main(@builtin(workgroup_id) gindex: vec3<u32>,@builtin(local_invocation_id) lindex: vec3<u32>) {
+  var gidx0 = i32(gindex.x); /* 25 */
+  var lidx0 = i32(lindex.x); /* 3 */
+  var alu0 = ((gidx0*72)+(lidx0*24));
   var val0 = data1[alu0];
   var val1 = data1[(alu0+1)];
   var val2 = data1[(alu0+2)];
@@ -10135,85 +10136,106 @@ var<uniform> INFINITY : f32;
   var val9 = data1[(alu0+13)];
   var val10 = data1[(alu0+14)];
   var val11 = data1[(alu0+15)];
-  var alu1 = (gidx0*3);
+  var val12 = data1[(alu0+18)];
+  var val13 = data1[(alu0+19)];
+  var val14 = data1[(alu0+20)];
+  var val15 = data1[(alu0+21)];
+  var precast0 = lidx0;
+  var precast1 = (bitcast<u32>(precast0)<<2u);
+  var alu1 = ((gidx0*12)+bitcast<i32>(precast1));
   data0[alu1] = ((val2-val0)*(val3-val1));
   data0[(alu1+1)] = ((val6-val4)*(val7-val5));
   data0[(alu1+2)] = ((val10-val8)*(val11-val9));
+  data0[(alu1+3)] = ((val14-val12)*(val15-val13));
 }`;
 
-const r_1183_3549_3n4 = `fn nan() -> f32 { let bits = 0xffffffffu; return bitcast<f32>(bits); }
+const r_75_4_75_4 = `fn nan() -> f32 { let bits = 0xffffffffu; return bitcast<f32>(bits); }
 @group(0) @binding(0)
 var<uniform> INFINITY : f32;
 @group(0) @binding(1)var<storage,read_write>data0:array<f32>;
 @group(0) @binding(2)var<storage,read_write>data1:array<f32>;
 @group(0) @binding(3)var<storage,read_write>data2:array<f32>;
-@compute @workgroup_size(1) fn main(@builtin(workgroup_id) gindex: vec3<u32>,@builtin(local_invocation_id) lindex: vec3<u32>) {
-  var gidx0 = i32(gindex.x); /* 1183 */
-  var alu0 = (gidx0*3);
-  var alu1 = (alu0+1);
-  var alu2 = (alu0+2);
+@compute @workgroup_size(4) fn main(@builtin(workgroup_id) gindex: vec3<u32>,@builtin(local_invocation_id) lindex: vec3<u32>) {
+  var gidx0 = i32(gindex.x); /* 75 */
+  var lidx0 = i32(lindex.x); /* 4 */
+  var precast0 = gidx0;
+  var precast1 = (bitcast<u32>(precast0)<<2u);
+  var cast0 = bitcast<i32>(precast1);
+  var alu0 = (lidx0+cast0);
   var val0 = data2[alu0];
-  var val1 = data2[alu1];
-  var val2 = data2[alu2];
-  var alu3 = (gidx0*18);
-  var val3 = data1[(alu3+1)];
-  var val4 = data1[(alu3+2)];
-  var val5 = data1[(alu3+3)];
-  var val6 = data1[(alu3+7)];
-  var val7 = data1[(alu3+8)];
-  var val8 = data1[(alu3+9)];
-  var val9 = data1[(alu3+13)];
-  var val10 = data1[(alu3+14)];
-  var val11 = data1[(alu3+15)];
-  var alu4 = -val4;
-  var alu5 = -val5;
-  var alu6 = -val7;
-  var alu7 = -val8;
-  var alu8 = -val10;
-  var alu9 = -val11;
+  var alu1 = ((gidx0*24)+(lidx0*6));
+  var val1 = data1[(alu1+1)];
+  var val2 = data1[(alu1+2)];
+  var val3 = data1[(alu1+3)];
+  var alu2 = -val2;
+  var alu3 = -val3;
   var acc0 = false;
-  var acc1 = false;
-  var acc2 = false;
-  for (var ridx1 = 0; ridx1 < 3549; ridx1++) {
-    var val12 = data2[ridx1];
-    var alu10 = (ridx1*6);
-    var val13 = data1[alu10];
-    var val14 = data1[(alu10+1)];
-    var val15 = data1[(alu10+2)];
-    var val16 = data1[(alu10+3)];
-    var alu11 = -val15;
-    var alu12 = -val16;
-    var alu13 = (alu0+(ridx1*14193));
-    var alu14 = (-select(alu11,alu4,(alu11<alu4))-val13);
-    var alu15 = (-select(alu11,alu6,(alu11<alu6))-val13);
-    var alu16 = (-select(alu11,alu8,(alu11<alu8))-val13);
-    var alu17 = (-select(alu12,alu5,(alu12<alu5))-select(val14,val3,(val14<val3)));
-    var alu18 = (-select(alu12,alu7,(alu12<alu7))-select(val14,val6,(val14<val6)));
-    var alu19 = (-select(alu12,alu9,(alu12<alu9))-select(val14,val9,(val14<val9)));
-    var alu20 = (select(0.0f,alu14,(0.0f<alu14))*select(0.0f,alu17,(0.0f<alu17)));
-    var alu21 = (select(0.0f,alu15,(0.0f<alu15))*select(0.0f,alu18,(0.0f<alu18)));
-    var alu22 = (select(0.0f,alu16,(0.0f<alu16))*select(0.0f,alu19,(0.0f<alu19)));
-    acc0 = (acc0|select(false,(bool((i32((0.45f<(alu20*(1/(((val12+val0)-alu20)+1e-06f)))))))),(((alu13+14193)%14194)<7097)));
-    acc1 = (acc1|select(false,(bool((i32((0.45f<(alu21*(1/(((val12+val1)-alu21)+1e-06f)))))))),((alu13%14194)<7097)));
-    acc2 = (acc2|select(false,(bool((i32((0.45f<(alu22*(1/(((val12+val2)-alu22)+1e-06f)))))))),(((alu13+1)%14194)<7097)));
+  for (var ridx2 = 0; ridx2 < 75; ridx2++) {
+    var precast2 = ridx2;
+    var alu4 = (ridx2*24);
+    var val4 = data1[alu4];
+    var precast3 = (bitcast<u32>(precast2)<<2u);
+    var cast1 = bitcast<i32>(precast3);
+    var val5 = data2[cast1];
+    var val6 = data2[(cast1+1)];
+    var val7 = data2[(cast1+2)];
+    var val8 = data2[(cast1+3)];
+    var val9 = data1[(alu4+1)];
+    var val10 = data1[(alu4+2)];
+    var val11 = data1[(alu4+3)];
+    var val12 = data1[(alu4+6)];
+    var val13 = data1[(alu4+7)];
+    var val14 = data1[(alu4+8)];
+    var val15 = data1[(alu4+9)];
+    var val16 = data1[(alu4+12)];
+    var val17 = data1[(alu4+13)];
+    var val18 = data1[(alu4+14)];
+    var val19 = data1[(alu4+15)];
+    var val20 = data1[(alu4+18)];
+    var val21 = data1[(alu4+19)];
+    var val22 = data1[(alu4+20)];
+    var val23 = data1[(alu4+21)];
+    var alu5 = -val10;
+    var alu6 = -val11;
+    var alu7 = -val14;
+    var alu8 = -val15;
+    var alu9 = -val18;
+    var alu10 = -val19;
+    var alu11 = -val22;
+    var alu12 = -val23;
+    var alu13 = (ridx2*1194);
+    var alu14 = (alu13+alu0);
+    var alu15 = (-select(alu5,alu2,(alu5<alu2))-val4);
+    var alu16 = (-select(alu7,alu2,(alu7<alu2))-val12);
+    var alu17 = (-select(alu9,alu2,(alu9<alu2))-val16);
+    var alu18 = (-select(alu11,alu2,(alu11<alu2))-val20);
+    var alu19 = (-select(alu6,alu3,(alu6<alu3))-select(val9,val1,(val9<val1)));
+    var alu20 = (-select(alu8,alu3,(alu8<alu3))-select(val13,val1,(val13<val1)));
+    var alu21 = (-select(alu10,alu3,(alu10<alu3))-select(val17,val1,(val17<val1)));
+    var alu22 = (-select(alu12,alu3,(alu12<alu3))-select(val21,val1,(val21<val1)));
+    var alu23 = (select(0.0f,alu15,(0.0f<alu15))*select(0.0f,alu19,(0.0f<alu19)));
+    var alu24 = (select(0.0f,alu16,(0.0f<alu16))*select(0.0f,alu20,(0.0f<alu20)));
+    var alu25 = (select(0.0f,alu17,(0.0f<alu17))*select(0.0f,alu21,(0.0f<alu21)));
+    var alu26 = (select(0.0f,alu18,(0.0f<alu18))*select(0.0f,alu22,(0.0f<alu22)));
+    acc0 = ((((acc0|select(false,(bool((i32((0.45f<(alu23*(1/(((val5+val0)-alu23)+1e-06f)))))))),(((cast0+lidx0+alu13+1197)%1198)<599)))|select(false,(bool((i32((0.45f<(alu24*(1/(((val6+val0)-alu24)+1e-06f)))))))),(((alu14+1196)%1198)<599)))|select(false,(bool((i32((0.45f<(alu25*(1/(((val7+val0)-alu25)+1e-06f)))))))),(((alu14+1195)%1198)<599)))|select(false,(bool((i32((0.45f<(alu26*(1/(((val8+val0)-alu26)+1e-06f)))))))),(((alu14+1194)%1198)<599)));
   }
   data0[alu0] = (f32((acc0!=true)));
-  data0[alu1] = (f32((acc1!=true)));
-  data0[alu2] = (f32((acc2!=true)));
 }`;
 
-const E_1183_3_2_3 = `fn nan() -> f32 { let bits = 0xffffffffu; return bitcast<f32>(bits); }
+const E_75_4_2_3 = `fn nan() -> f32 { let bits = 0xffffffffu; return bitcast<f32>(bits); }
 @group(0) @binding(0)
 var<uniform> INFINITY : f32;
 @group(0) @binding(1)var<storage,read_write>data0:array<f32>;
 @group(0) @binding(2)var<storage,read_write>data1:array<f32>;
 @group(0) @binding(3)var<storage,read_write>data2:array<f32>;
-@compute @workgroup_size(3,2) fn main(@builtin(workgroup_id) gindex: vec3<u32>,@builtin(local_invocation_id) lindex: vec3<u32>) {
-  var gidx0 = i32(gindex.x); /* 1183 */
-  var lidx0 = i32(lindex.x); /* 3 */
+@compute @workgroup_size(4,2) fn main(@builtin(workgroup_id) gindex: vec3<u32>,@builtin(local_invocation_id) lindex: vec3<u32>) {
+  var gidx0 = i32(gindex.x); /* 75 */
+  var lidx0 = i32(lindex.x); /* 4 */
   var lidx1 = i32(lindex.y); /* 2 */
-  var val0 = data2[(lidx0+(gidx0*3))];
-  var alu0 = ((lidx1*3)+(gidx0*18)+(lidx0*6));
+  var precast0 = gidx0;
+  var precast1 = (bitcast<u32>(precast0)<<2u);
+  var val0 = data2[(lidx0+bitcast<i32>(precast1))];
+  var alu0 = ((lidx1*3)+(gidx0*24)+(lidx0*6));
   var val1 = data1[alu0];
   var alu1 = (alu0+1);
   var val2 = data1[alu1];
@@ -10819,13 +10841,15 @@ const setupNet = async (device, safetensor) => {
     const buf_585 = createEmptyBuf(device, 14196);;
     const buf_586 = createEmptyBuf(device, 14196);;
     const buf_587 = createEmptyBuf(device, 85176);;
-    const output0 = createEmptyBuf(device, 85176);;
+    const buf_588 = createEmptyBuf(device, 1200);;
+    const buf_589 = createEmptyBuf(device, 1200);;
+    const output0 = createEmptyBuf(device, 7200);;
 
     const gpuWriteBuffer0 = device.createBuffer({size:input0.size, usage: GPUBufferUsage.COPY_SRC | GPUBufferUsage.MAP_WRITE });
 
     const gpuReadBuffer0 = device.createBuffer({size:output0.size, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ });
 
-    const kernels = [r_13_4_13_4, r_13_2_26, r_13_13, E_27_4_4, E_4_4, E_4_4, E_4_4, E_36_32_4, E_8_4, E_8_4, E_8_4, E_8_32_4, E_8_4, E_8_4, E_8_4, E_18_32_4, E_4_4, E_4_4, E_4_4, E_18_32_4, E_4_4, E_4_4, E_4_4, E_12_32_4, E_8_4, E_8_4, E_8_4, E_144_32_4, E_16_4, E_16_4, E_16_4, E_32_32_4, E_16_4, E_16_4, E_16_4, E_72_32_4, E_8_4, E_8_4, E_8_4, E_72_32_4, E_8_4, E_8_4, E_8_4, E_72_32_4, E_8_4, E_8_4, E_8_4, E_72_32_4, E_8_4, E_8_4, E_8_4, E_64_32_4, E_16_4, E_16_4, E_16_4, E_576_32_4, E_32_4, E_32_4, E_32_4, E_128_32_4, E_32_4, E_32_4, E_32_4, E_288_32_4, E_16_4, E_16_4, E_16_4, E_288_32_4, E_16_4, E_16_4, E_16_4, E_288_32_4, E_16_4, E_16_4, E_16_4, E_288_32_4, E_16_4, E_16_4, E_16_4, E_256_32_4, E_32_4, E_32_4, E_32_4, E_2304_32_4, E_2_32_4, E_2_32_4, E_2_32_4, E_512_32_4, E_2_32_4, E_2_32_4, E_2_32_4, E_1152_32_4, E_32_4, E_32_4, E_32_4, E_1152_32_4, E_32_4, E_32_4, E_32_4, E_768_32_4, E_2_32_4, E_2_32_4, E_2_32_4, E_256_32_4, E_32_4, E_32_4, E_32_4, E_1024_32_4, E_2_32_4, E_2_32_4, E_2_32_4, E_384_32_4, E_32_4, E_32_4, E_32_4, E_288_32_4, E_16_4, E_16_4, E_16_4, E_288_32_4, E_16_4, E_16_4, E_16_4, E_192_32_4, E_32_4, E_32_4, E_32_4, E_96_32_4, E_16_4, E_16_4, E_16_4, E_72_32_4, E_8_4, E_8_4, E_8_4, E_72_32_4, E_8_4, E_8_4, E_8_4, E_48_32_4, E_16_4, E_16_4, E_16_4, E_288_32_4, E_16_4, E_16_4, E_16_4, E_288_32_4, E_16_4, E_16_4, E_16_4, E_32_32_4, E_16_4, E_360_32_4, E_5_4_4, E_5_4_4, E_5_4_4, E_450_32_4, E_5_4_4, E_5_4_4, E_5_4_4, E_50_32_4, E_5_4_4, E_288_32_4, E_16_4, E_16_4, E_16_4, E_192_32_4, E_32_4, E_32_4, E_32_4, E_288_32_4, E_16_4, E_16_4, E_16_4, E_288_32_4, E_16_4, E_16_4, E_16_4, E_192_32_4, E_32_4, E_32_4, E_32_4, E_576_32_4n1, E_16_4, E_16_4, E_16_4, E_288_32_4, E_16_4, E_16_4, E_16_4, E_32_32_4, E_16_4, E_720_32_4, E_5_4_4, E_5_4_4, E_5_4_4, E_450_32_4, E_5_4_4, E_5_4_4, E_5_4_4, E_50_32_4, E_5_4_4, E_1152_32_4, E_32_4, E_32_4, E_32_4, E_768_32_4, E_2_32_4, E_2_32_4, E_2_32_4, E_1152_32_4, E_32_4, E_32_4, E_32_4, E_1152_32_4, E_32_4, E_32_4, E_32_4, E_768_32_4, E_2_32_4, E_2_32_4, E_2_32_4, E_1152_32_4n1, E_16_4, E_16_4, E_16_4, E_288_32_4, E_16_4, E_16_4, E_16_4, E_32_32_4, E_16_4, E_1440_32_4, E_5_4_4, E_5_4_4, E_5_4_4, E_450_32_4, E_5_4_4, E_5_4_4, E_5_4_4, E_50_32_4, E_5_4_4, E_4_4n1, E_1183_3, r_80_16_5, r_1183_3549_3, r_2_13_13_2_16_4_3_4_4_3_3, r_13_13_8_8_2_16_4_4_3_3, r_169_8_16_4_4_32, r_13_13_4_8_2_16_4_4_3_3, r_13_13_4_8_2_16_4_4_3_3n1, E_6_169_8_16_4, r_169_8_16_12_4_4_4, r_13_13_16_4_32_4_4_3_3, r_169_16_4_16_4_4_4, r_13_13_8_4_32_4_4_3_3, r_13_13_8_4_32_4_4_3_3n1, r_13_13_8_4_32_4_4_3_3n2, r_13_13_8_4_32_4_4_3_3n3, E_4_169_32_4_4, r_169_16_4_32_4_4_4, r_13_13_32_2_2_64_4_3_3, r_169_32_32_4_4_4, r_13_13_16_2_2_64_4_3_3, r_13_13_16_2_2_64_4_3_3n1, r_13_13_16_2_2_64_4_3_3n2, r_13_13_16_2_2_64_4_3_3n3, E_8_169_32_4, r_169_32_64_4_4_4, r_2_13_13_32_128_4_3_3, r_2_169_32_64_4_4, r_13_13_32_128_4_3_3, r_13_13_32_128_4_3_3n1, E_12_169_32, r_2_169_32_96_4_4, r_169_32_64_4_4, r_4_13_13_32_5_5, r_4_13_13_32_5_5, r_4_13_13_32_5_5, E_16_169_32, r_2_169_32_128_4_4, E_12_13_13_32_2_2, r_169_32_96_4_4_4, r_13_13_16_2_2_64_4_3_3, r_13_13_16_2_2_64_4_3_3n2, E_6_169_32_4, r_169_32_48_4_4_4, E_6_13_13_32_4_4, r_169_16_4_48_4_4_4, r_13_13_8_4_32_4_4_3_3, r_13_13_8_4_32_4_4_3_3n2, E_3_169_32_4_4, r_169_16_4_24_4_4_4, r_13_13_16_4_64_4_4_3_3, r_5_13_13_4_4_64_4_4_3_3, r_13_13_16_2_2_64_4_3_3n4, r_13_13_16_4_64_4_4_3_3, r_5_13_13_4_4_80_4_4_3_3, E_6_169_32_4n1, r_169_16_4_16_4_4_4n1, r_5_169_4_4_20_4_4_4, r_169_32_48_4_4_4, r_13_13_16_2_2_64_4_3_3, r_13_13_16_2_2_64_4_3_3n2, E_6_169_32_4, r_169_32_48_4_4_4, r_13_13_16_2_2_128_4_3_3, r_5_13_13_4_2_2_128_4_3_3, r_13_13_32_128_4_3_3n2, r_13_13_16_2_2_64_4_3_3n2, r_5_13_13_4_2_2_80_4_3_3, E_12_169_32n1, r_169_16_16_4_4_4, r_5_169_4_20_4_4_4, r_2_169_32_96_4_4, r_13_13_32_128_4_3_3, r_13_13_32_128_4_3_3n3, E_12_169_32, r_2_169_32_96_4_4, r_13_13_16_256_4_3_3, r_5_13_13_4_256_4_3_3, r_13_13_16_64_4_3_3, r_5_13_13_4_80_4_3_3, r_169_16_16_4_4, r_5_169_4_20_4_4, r_1183_4_3_16, E_5_1183_16_3, r_1183_4_3_16n1, r_1183_4_3_16n2, E_1183_3_2, E_1183_3_2n1, E_1183_3n1, E_1183_3n2, E_1183_3n3, E_1183_3n4, r_1183_20_3_4, r_1183_20_3_4n1, E_2_2_2_2_2_2_2_2_2_2_2_2, r_1183_3549_3n1, E_1183_3_6, E_64_32_2, E_16_32_2_2_2, E_32_32_2_2, E_64_32_2, E_8_32_4_2_2, E_16_32_4_2, E_32_32_2_2, E_64_32_2, E_8_16_8_2_2, E_16_16_8_2, E_16_32_4_2, E_32_32_2_2, E_64_32_2, E_8_8_16_2_2, E_16_8_16_2, E_16_16_8_2, E_16_32_4_2, E_32_32_2_2, E_64_32_2, E_4_2_8_16_2_2, E_8_2_8_16_2, E_16_8_16_2, E_16_16_8_2, E_16_32_4_2, E_32_32_2_2, E_64_32_2, E_2_4_8_16_2_2, E_4_4_8_16_2, E_8_2_8_16_2, E_16_8_16_2, E_16_16_8_2, E_16_32_4_2, E_32_32_2_2, E_64_32_2, E_8_8_16_2_2n1, E_2_8_8_16_2, E_4_4_8_16_2, E_8_2_8_16_2, E_16_8_16_2, E_16_16_8_2, E_16_32_4_2, E_32_32_2_2, E_64_32_2, E_16_4_16_2_2, E_16_8_16_2n1, E_2_8_8_16_2, E_4_4_8_16_2, E_8_2_8_16_2, E_16_8_16_2, E_16_16_8_2, E_16_32_4_2, E_32_32_2_2, E_64_32_2, E_32_2_16_2_2, E_32_4_16_2, E_16_8_16_2n1, E_2_8_8_16_2, E_4_4_8_16_2, E_8_2_8_16_2, E_16_8_16_2, E_16_16_8_2, E_16_32_4_2, E_32_32_2_2, E_64_32_2, E_32_32_2_2n1, E_64_2_16_2, E_32_4_16_2, E_16_8_16_2n1, E_2_8_8_16_2, E_4_4_8_16_2, E_8_2_8_16_2, E_16_8_16_2, E_16_16_8_2, E_16_32_4_2, E_32_32_2_2, E_64_32_2, E_64_32_2n1, E_64_2_16_2, E_32_4_16_2, E_16_8_16_2n1, E_2_8_8_16_2, E_4_4_8_16_2, E_8_2_8_16_2, E_16_8_16_2, E_16_16_8_2, E_16_32_4_2, E_32_32_2_2, E_64_32_2, r_1183_3549_3n2, r_1183_3549_3n3, r_1183_2_3549_3_3, E_1183_3n5, r_1183_3549_3n4, E_1183_3_2_3];
+    const kernels = [r_13_4_13_4, r_13_2_26, r_13_13, E_27_4_4, E_4_4, E_4_4, E_4_4, E_36_32_4, E_8_4, E_8_4, E_8_4, E_8_32_4, E_8_4, E_8_4, E_8_4, E_18_32_4, E_4_4, E_4_4, E_4_4, E_18_32_4, E_4_4, E_4_4, E_4_4, E_12_32_4, E_8_4, E_8_4, E_8_4, E_144_32_4, E_16_4, E_16_4, E_16_4, E_32_32_4, E_16_4, E_16_4, E_16_4, E_72_32_4, E_8_4, E_8_4, E_8_4, E_72_32_4, E_8_4, E_8_4, E_8_4, E_72_32_4, E_8_4, E_8_4, E_8_4, E_72_32_4, E_8_4, E_8_4, E_8_4, E_64_32_4, E_16_4, E_16_4, E_16_4, E_576_32_4, E_32_4, E_32_4, E_32_4, E_128_32_4, E_32_4, E_32_4, E_32_4, E_288_32_4, E_16_4, E_16_4, E_16_4, E_288_32_4, E_16_4, E_16_4, E_16_4, E_288_32_4, E_16_4, E_16_4, E_16_4, E_288_32_4, E_16_4, E_16_4, E_16_4, E_256_32_4, E_32_4, E_32_4, E_32_4, E_2304_32_4, E_2_32_4, E_2_32_4, E_2_32_4, E_512_32_4, E_2_32_4, E_2_32_4, E_2_32_4, E_1152_32_4, E_32_4, E_32_4, E_32_4, E_1152_32_4, E_32_4, E_32_4, E_32_4, E_768_32_4, E_2_32_4, E_2_32_4, E_2_32_4, E_256_32_4, E_32_4, E_32_4, E_32_4, E_1024_32_4, E_2_32_4, E_2_32_4, E_2_32_4, E_384_32_4, E_32_4, E_32_4, E_32_4, E_288_32_4, E_16_4, E_16_4, E_16_4, E_288_32_4, E_16_4, E_16_4, E_16_4, E_192_32_4, E_32_4, E_32_4, E_32_4, E_96_32_4, E_16_4, E_16_4, E_16_4, E_72_32_4, E_8_4, E_8_4, E_8_4, E_72_32_4, E_8_4, E_8_4, E_8_4, E_48_32_4, E_16_4, E_16_4, E_16_4, E_288_32_4, E_16_4, E_16_4, E_16_4, E_288_32_4, E_16_4, E_16_4, E_16_4, E_32_32_4, E_16_4, E_360_32_4, E_5_4_4, E_5_4_4, E_5_4_4, E_450_32_4, E_5_4_4, E_5_4_4, E_5_4_4, E_50_32_4, E_5_4_4, E_288_32_4, E_16_4, E_16_4, E_16_4, E_192_32_4, E_32_4, E_32_4, E_32_4, E_288_32_4, E_16_4, E_16_4, E_16_4, E_288_32_4, E_16_4, E_16_4, E_16_4, E_192_32_4, E_32_4, E_32_4, E_32_4, E_576_32_4n1, E_16_4, E_16_4, E_16_4, E_288_32_4, E_16_4, E_16_4, E_16_4, E_32_32_4, E_16_4, E_720_32_4, E_5_4_4, E_5_4_4, E_5_4_4, E_450_32_4, E_5_4_4, E_5_4_4, E_5_4_4, E_50_32_4, E_5_4_4, E_1152_32_4, E_32_4, E_32_4, E_32_4, E_768_32_4, E_2_32_4, E_2_32_4, E_2_32_4, E_1152_32_4, E_32_4, E_32_4, E_32_4, E_1152_32_4, E_32_4, E_32_4, E_32_4, E_768_32_4, E_2_32_4, E_2_32_4, E_2_32_4, E_1152_32_4n1, E_16_4, E_16_4, E_16_4, E_288_32_4, E_16_4, E_16_4, E_16_4, E_32_32_4, E_16_4, E_1440_32_4, E_5_4_4, E_5_4_4, E_5_4_4, E_450_32_4, E_5_4_4, E_5_4_4, E_5_4_4, E_50_32_4, E_5_4_4, E_4_4n1, E_1183_3, r_80_16_5, r_1183_3549_3, r_2_13_13_2_16_4_3_4_4_3_3, r_13_13_8_8_2_16_4_4_3_3, r_169_8_16_4_4_32, r_13_13_4_8_2_16_4_4_3_3, r_13_13_4_8_2_16_4_4_3_3n1, E_6_169_8_16_4, r_169_8_16_12_4_4_4, r_13_13_16_4_32_4_4_3_3, r_169_16_4_16_4_4_4, r_13_13_8_4_32_4_4_3_3, r_13_13_8_4_32_4_4_3_3n1, r_13_13_8_4_32_4_4_3_3n2, r_13_13_8_4_32_4_4_3_3n3, E_4_169_32_4_4, r_169_16_4_32_4_4_4, r_13_13_32_2_2_64_4_3_3, r_169_32_32_4_4_4, r_13_13_16_2_2_64_4_3_3, r_13_13_16_2_2_64_4_3_3n1, r_13_13_16_2_2_64_4_3_3n2, r_13_13_16_2_2_64_4_3_3n3, E_8_169_32_4, r_169_32_64_4_4_4, r_2_13_13_32_128_4_3_3, r_2_169_32_64_4_4, r_13_13_32_128_4_3_3, r_13_13_32_128_4_3_3n1, E_12_169_32, r_2_169_32_96_4_4, r_169_32_64_4_4, r_4_13_13_32_5_5, r_4_13_13_32_5_5, r_4_13_13_32_5_5, E_16_169_32, r_2_169_32_128_4_4, E_12_13_13_32_2_2, r_169_32_96_4_4_4, r_13_13_16_2_2_64_4_3_3, r_13_13_16_2_2_64_4_3_3n2, E_6_169_32_4, r_169_32_48_4_4_4, E_6_13_13_32_4_4, r_169_16_4_48_4_4_4, r_13_13_8_4_32_4_4_3_3, r_13_13_8_4_32_4_4_3_3n2, E_3_169_32_4_4, r_169_16_4_24_4_4_4, r_13_13_16_4_64_4_4_3_3, r_5_13_13_4_4_64_4_4_3_3, r_13_13_16_2_2_64_4_3_3n4, r_13_13_16_4_64_4_4_3_3, r_5_13_13_4_4_80_4_4_3_3, E_6_169_32_4n1, r_169_16_4_16_4_4_4n1, r_5_169_4_4_20_4_4_4, r_169_32_48_4_4_4, r_13_13_16_2_2_64_4_3_3, r_13_13_16_2_2_64_4_3_3n2, E_6_169_32_4, r_169_32_48_4_4_4, r_13_13_16_2_2_128_4_3_3, r_5_13_13_4_2_2_128_4_3_3, r_13_13_32_128_4_3_3n2, r_13_13_16_2_2_64_4_3_3n2, r_5_13_13_4_2_2_80_4_3_3, E_12_169_32n1, r_169_16_16_4_4_4, r_5_169_4_20_4_4_4, r_2_169_32_96_4_4, r_13_13_32_128_4_3_3, r_13_13_32_128_4_3_3n3, E_12_169_32, r_2_169_32_96_4_4, r_13_13_16_256_4_3_3, r_5_13_13_4_256_4_3_3, r_13_13_16_64_4_3_3, r_5_13_13_4_80_4_3_3, r_169_16_16_4_4, r_5_169_4_20_4_4, r_1183_4_3_16, E_5_1183_16_3, r_1183_4_3_16n1, r_1183_4_3_16n2, E_1183_3_2, E_1183_3_2n1, E_1183_3n1, E_1183_3n2, E_1183_3n3, E_1183_3n4, r_1183_20_3_4, r_1183_20_3_4n1, E_2_2_2_2_2_2_2_2_2_2_2_2, r_1183_3549_3n1, E_1183_3_6, E_64_32_2, E_16_32_2_2_2, E_32_32_2_2, E_64_32_2, E_8_32_4_2_2, E_16_32_4_2, E_32_32_2_2, E_64_32_2, E_8_16_8_2_2, E_16_16_8_2, E_16_32_4_2, E_32_32_2_2, E_64_32_2, E_8_8_16_2_2, E_16_8_16_2, E_16_16_8_2, E_16_32_4_2, E_32_32_2_2, E_64_32_2, E_4_2_8_16_2_2, E_8_2_8_16_2, E_16_8_16_2, E_16_16_8_2, E_16_32_4_2, E_32_32_2_2, E_64_32_2, E_2_4_8_16_2_2, E_4_4_8_16_2, E_8_2_8_16_2, E_16_8_16_2, E_16_16_8_2, E_16_32_4_2, E_32_32_2_2, E_64_32_2, E_8_8_16_2_2n1, E_2_8_8_16_2, E_4_4_8_16_2, E_8_2_8_16_2, E_16_8_16_2, E_16_16_8_2, E_16_32_4_2, E_32_32_2_2, E_64_32_2, E_16_4_16_2_2, E_16_8_16_2n1, E_2_8_8_16_2, E_4_4_8_16_2, E_8_2_8_16_2, E_16_8_16_2, E_16_16_8_2, E_16_32_4_2, E_32_32_2_2, E_64_32_2, E_32_2_16_2_2, E_32_4_16_2, E_16_8_16_2n1, E_2_8_8_16_2, E_4_4_8_16_2, E_8_2_8_16_2, E_16_8_16_2, E_16_16_8_2, E_16_32_4_2, E_32_32_2_2, E_64_32_2, E_32_32_2_2n1, E_64_2_16_2, E_32_4_16_2, E_16_8_16_2n1, E_2_8_8_16_2, E_4_4_8_16_2, E_8_2_8_16_2, E_16_8_16_2, E_16_16_8_2, E_16_32_4_2, E_32_32_2_2, E_64_32_2, E_64_32_2n1, E_64_2_16_2, E_32_4_16_2, E_16_8_16_2n1, E_2_8_8_16_2, E_4_4_8_16_2, E_8_2_8_16_2, E_16_8_16_2, E_16_16_8_2, E_16_32_4_2, E_32_32_2_2, E_64_32_2, r_1183_3549_3n2, r_1183_3549_3n3, r_1183_2_3549_3_3, E_25_3_4, r_75_4_75_4, E_75_4_2_3];
     const pipelines = await Promise.all(kernels.map(async (name, i) => {
       return await device.createComputePipelineAsync({
           layout: device.createPipelineLayout({
@@ -11278,9 +11302,9 @@ const setupNet = async (device, safetensor) => {
         addComputePass(device, commandEncoder, pipelines[429], layouts[429], infinityBuf, [buf_585, buf_487, buf_459], [1183, 1, 1]);
         addComputePass(device, commandEncoder, pipelines[430], layouts[430], infinityBuf, [buf_586, buf_485, buf_459, buf_583, buf_585, buf_487], [1183, 1, 1]);
         addComputePass(device, commandEncoder, pipelines[431], layouts[431], infinityBuf, [buf_587, buf_584, buf_586, buf_487], [1183, 1, 1]);
-        addComputePass(device, commandEncoder, pipelines[432], layouts[432], infinityBuf, [buf_485, buf_587], [1183, 1, 1]);
-        addComputePass(device, commandEncoder, pipelines[433], layouts[433], infinityBuf, [buf_582, buf_587, buf_485], [1183, 1, 1]);
-        addComputePass(device, commandEncoder, pipelines[434], layouts[434], infinityBuf, [output0, buf_587, buf_582], [1183, 1, 1]);
+        addComputePass(device, commandEncoder, pipelines[432], layouts[432], infinityBuf, [buf_588, buf_587], [25, 1, 1]);
+        addComputePass(device, commandEncoder, pipelines[433], layouts[433], infinityBuf, [buf_589, buf_587, buf_588], [75, 1, 1]);
+        addComputePass(device, commandEncoder, pipelines[434], layouts[434], infinityBuf, [output0, buf_587, buf_589], [75, 1, 1]);
         commandEncoder.copyBufferToBuffer(output0, 0, gpuReadBuffer0, 0, output0.size);
         const gpuCommands = commandEncoder.finish();
         device.queue.submit([gpuCommands]);
