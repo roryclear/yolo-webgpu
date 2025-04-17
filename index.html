@@ -266,35 +266,6 @@
 		    });
         };
         
-        function processOutput(output, img_width, img_height) {
-            let boxes = [];
-            const numPredictions = Math.pow(modelInputSize/32, 2) * 21;
-            for (let index=0;index<numPredictions;index++) {
-                const [class_id,prob] = [...Array(80).keys()]
-                    .map(col => [col, output[numPredictions*(col+4)+index]])
-                    .reduce((accum, item) => item[1]>accum[1] ? item : accum,[0,0]);
-
-                if (prob < 0.25) continue;
-                const label = yolo_classes[class_id];
-                const xc = output[index];
-                const yc = output[numPredictions+index];
-                const w = output[2*numPredictions+index];
-                const h = output[3*numPredictions+index];
-                const x1 = (xc-w/2)/modelInputSize*img_width;
-                const y1 = (yc-h/2)/modelInputSize*img_height;
-                const x2 = (xc+w/2)/modelInputSize*img_width;
-                const y2 = (yc+h/2)/modelInputSize*img_height;
-                boxes.push([x1,y1,x2,y2,label,prob]);
-            }
-
-            boxes = boxes.sort((box1,box2) => box2[5]-box1[5])
-            const result = [];
-            while (boxes.length>0) {
-                result.push(boxes[0]);
-                boxes = boxes.filter(box => iou(boxes[0],box)<0.7);
-            }
-            return result;
-        }
 
         const yolo_classes = [
             'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat',
