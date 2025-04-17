@@ -178,13 +178,16 @@
             let boxes = await detectObjectsOnFrame(offscreenContext);
             const flat = boxes[0];
             const reshaped = [];
-            const group = new Array(6);
-
+            const group = new Array(5);
             for (let i = 0; i < flat.length; i += 6) {
-              const confidence = flat[i + 4];
-              if (confidence >= 0.25) {
-                for (let j = 0; j < 6; j++) group[j] = flat[i + j];
-                reshaped.push([...group]);
+              if (flat[i + 4] >= 0.25) {
+                reshaped.push([
+                  flat[i + 0],
+                  flat[i + 1],
+                  flat[i + 2],
+                  flat[i + 3],
+                  flat[i + 5]
+                ]);
               }
             }
             drawBoxes(offscreenCanvas, reshaped, targetWidth, targetHeight, offsetX, offsetY);
@@ -200,7 +203,7 @@
             const scaleX = canvas.width / targetWidth;
             const scaleY = canvas.height / targetHeight;
 
-            boxes.forEach(([x1, y1, x2, y2, conf,classIndex]) => {
+            boxes.forEach(([x1, y1, x2, y2 ,classIndex]) => {
                 const label = yolo_classes[classIndex];
                 const color = classColors[classIndex];
                 ctx.strokeStyle = color;
