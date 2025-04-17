@@ -176,15 +176,17 @@
             offscreenContext.clearRect(0, 0, modelInputSize, modelInputSize);
             offscreenContext.drawImage(video, offsetX, offsetY, targetWidth, targetHeight);
             let boxes = await detectObjectsOnFrame(offscreenContext);
-            //console.log(boxes[0].slice(0,6));
             const flat = boxes[0];
             const reshaped = [];
+            const group = new Array(5);
+
             for (let i = 0; i < flat.length; i += 6) {
-              if (flat[i + 5] >= 0.25) {
-                reshaped.push(flat.slice(i, i + 5));
+              const confidence = flat[i + 5];
+              if (confidence >= 0.25) {
+                for (let j = 0; j < 5; j++) group[j] = flat[i + j];
+                reshaped.push([...group]);
               }
             }
-            //console.log(reshaped);
             drawBoxes(offscreenCanvas, reshaped, targetWidth, targetHeight, offsetX, offsetY);
             requestAnimationFrame(processFrame);
         }
