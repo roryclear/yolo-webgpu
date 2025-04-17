@@ -179,11 +179,11 @@
             //console.log(boxes[0].slice(0,6));
             const flat = boxes[0];
             const reshaped = [];
-
             for (let i = 0; i < flat.length; i += 6) {
-              if(flat[i+5] >= 0.25){
-                    reshaped.push(flat.slice(i, i + 5));
-                }
+              const score = flat[i + 5];
+              if (score >= 0.25) {
+                reshaped.push(flat.slice(i, i + 5));
+              }
             }
             //console.log(reshaped);
             drawBoxes(offscreenCanvas, reshaped, targetWidth, targetHeight, offsetX, offsetY);
