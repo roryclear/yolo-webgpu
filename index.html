@@ -232,11 +232,8 @@
                 net = await yolov8.load(device, "./net.safetensors");
                 loadingContainer.style.display = "none";
             }
-            let start = performance.now();
             const [input,img_width,img_height] = await prepareInput(offscreenContext);
-            start = performance.now();
             const output = await net(new Float32Array(input));
-            start = performance.now();
             return output;
         }
 
