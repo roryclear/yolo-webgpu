@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YOLOv8 tinygrad WebGPU</title>
     <script type="module">
-        import yolov8 from "./net_640.js"
+        import yolov8 from "./net.js"
         window.yolov8 = yolov8;
     </script>
     <style>
@@ -193,7 +193,7 @@
             const scaleX = canvas.width / targetWidth;
             const scaleY = canvas.height / targetHeight;
 
-            boxes.forEach(([x1, y1, x2, y2 ,classIndex]) => {
+            boxes.forEach(([x1, y1, x2, y2, classIndex]) => {
                 const label = yolo_classes[classIndex];
                 const color = classColors[classIndex];
                 ctx.strokeStyle = color;
