@@ -7,6 +7,9 @@
     <script type="module">
         import yolov8 from "./net_640.js"
         window.yolov8 = yolov8;
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.startProcessing) window.startProcessing();
+        });
     </script>
     <style>
         body {
@@ -175,14 +178,17 @@
             const offsetY = (modelInputSize - targetHeight) / 2;
             offscreenContext.clearRect(0, 0, modelInputSize, modelInputSize);
             offscreenContext.drawImage(video, offsetX, offsetY, targetWidth, targetHeight);
-            let boxes = await detectObjectsOnFrame(offscreenContext);
+            const boxes = await detectObjectsOnFrame(offscreenContext);
             const validBoxes = [];
             for (let i = 0; i < boxes.length; i += 6)
                 if (boxes[i + 4] > 0) validBoxes.push([boxes[i], boxes[i + 1], boxes[i + 2], boxes[i + 3], boxes[i + 5]]);
             drawBoxes(offscreenCanvas, validBoxes, targetWidth, targetHeight, offsetX, offsetY);
             requestAnimationFrame(processFrame);
         }
-        requestAnimationFrame(processFrame);
+
+        window.startProcessing = function() {
+            requestAnimationFrame(processFrame);
+        };
 
         function drawBoxes(offscreenCanvas, boxes, targetWidth, targetHeight, offsetX, offsetY) {
             const ctx = document.querySelector("canvas").getContext("2d");
@@ -218,8 +224,14 @@
                     wgpuError.style.display = "block";
                     loadingContainer.style.display = "none";
                 }
-                net = await yolov8.load(device, "./net.safetensors");
-                loadingContainer.style.display = "none";
+                try {
+                    net = await window.yolov8.load(device, "./net.safetensors");
+                    loadingContainer.style.display = "none";
+                } catch (error) {
+                    loadingContainer.style.display = "none";
+                    wgpuError.style.display = "block";
+                    wgpuError.textContent = "Failed to load model."
+                }
             }
             const input = await prepareInput(offscreenContext);
             const output = await net(new Float32Array(input));
@@ -248,7 +260,7 @@
             return await adapter.requestDevice({
                 requiredFeatures: ["shader-f16"],
                 powerPreference: "high-performance"
-		    });
+            });
         };
         
 
