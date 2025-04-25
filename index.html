@@ -7,6 +7,9 @@
     <script type="module">
         import yolov8 from "./net.js"
         window.yolov8 = yolov8;
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.startProcessing) window.startProcessing();
+        });
     </script>
     <style>
         body {
@@ -182,7 +185,10 @@
             drawBoxes(offscreenCanvas, validBoxes, targetWidth, targetHeight, offsetX, offsetY);
             requestAnimationFrame(processFrame);
         }
-        requestAnimationFrame(processFrame);
+
+        window.startProcessing = function() {
+            requestAnimationFrame(processFrame);
+        };
 
         function drawBoxes(offscreenCanvas, boxes, targetWidth, targetHeight, offsetX, offsetY) {
             const ctx = document.querySelector("canvas").getContext("2d");
@@ -218,18 +224,13 @@
                     wgpuError.style.display = "block";
                     loadingContainer.style.display = "none";
                 }
-                for (let retry = 0; retry < 4 && !net; retry++) {
-                    try {
-                        net = await yolov8.load(device, "./net.safetensors");
-                        loadingContainer.style.display = "none";
-                    } catch {
-                        await new Promise(resolve => setTimeout(resolve, 1000 * (retry + 1)));
-                    }
-                }
-                if (!net) {
-                    wgpuError.style.display = "block";
+                try {
+                    net = await window.yolov8.load(device, "./net.safetensors");
                     loadingContainer.style.display = "none";
-                    wgpuError.textContent = "Failed to load model.";
+                } catch (error) {
+                    loadingContainer.style.display = "none";
+                    wgpuError.style.display = "block";
+                    wgpuError.textContent = "Failed to load model."
                 }
             }
             const input = await prepareInput(offscreenContext);
