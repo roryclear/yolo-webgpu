@@ -213,12 +213,16 @@
 
         async function detectObjectsOnFrame(offscreenContext) {
             if (!net) {
+                alert("getting device");
                 let device = await getDevice();
+                alert("got device");
                 if (!device) {
                     wgpuError.style.display = "block";
                     loadingContainer.style.display = "none";
                 }
+                alert("loading net");
                 net = await yolov8.load(device, "./net.safetensors");
+                alert("got net");
                 loadingContainer.style.display = "none";
             }
             const input = await prepareInput(offscreenContext);
