@@ -223,6 +223,7 @@
                 if (!device) {
                     wgpuError.style.display = "block";
                     loadingContainer.style.display = "none";
+                    return;
                 }
                 try {
                     net = await window.yolov8.load(device, "./net.safetensors");
