@@ -126,20 +126,47 @@
         offscreenCanvas.height = modelInputSize;
         const offscreenContext = offscreenCanvas.getContext('2d');
 
+        let isVideoReady = false; // Flag to track video readiness
 
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices.getUserMedia({ audio: false,  video: { facingMode: { ideal: "environment" }}}).then(function (stream) {
-                video.srcObject = stream;
-                video.onloadedmetadata = function() {
-                    canvas.width = video.clientWidth;
-                    canvas.height = video.clientHeight;
-                }
-            });
+            navigator.mediaDevices.getUserMedia({ audio: false, video: { facingMode: { ideal: "environment" } } })
+                .then(function (stream) {
+                    video.srcObject = stream;
+                    video.onloadedmetadata = function () {
+                        canvas.width = video.clientWidth;
+                        canvas.height = video.clientHeight;
+                        isVideoReady = true; // Set flag when metadata is loaded
+                        requestAnimationFrame(processFrame); // Start processing only when video is ready
+                    };
+                    video.oncanplay = function () {
+                        // Additional check to ensure video is playable
+                        if (!isVideoReady) {
+                            isVideoReady = true;
+                            requestAnimationFrame(processFrame);
+                        }
+                    };
+                    video.play().catch(err => {
+                        console.error("Error playing video:", err);
+                        wgpuError.style.display = "block";
+                        wgpuError.innerText = "Error: Unable to play video stream";
+                        loadingContainer.style.display = "none";
+                    });
+                })
+                .catch(err => {
+                    console.error("Error accessing camera:", err);
+                    wgpuError.style.display = "block";
+                    wgpuError.innerText = "Error: Unable to access camera";
+                    loadingContainer.style.display = "none";
+                });
+        } else {
+            wgpuError.style.display = "block";
+            wgpuError.innerText = "Error: Camera access not supported";
+            loadingContainer.style.display = "none";
         }
 
         async function processFrame() {
-            if (video.videoWidth == 0 || video.videoHeight == 0) {
-                requestAnimationFrame(processFrame);
+            if (!isVideoReady || video.videoWidth === 0 || video.videoHeight === 0) {
+                requestAnimationFrame(processFrame); // Retry until video is ready
                 return;
             }
 
@@ -148,15 +175,15 @@
                 fps = 0;
             } else {
                 const now = performance.now();
-                delta = (now - lastCalledTime)/1000.0;
+                const delta = (now - lastCalledTime) / 1000.0;
                 lastCalledTime = now;
-                accumFps += 1/delta;
+                accumFps += 1 / delta;
 
                 if (frameCounter++ >= 10) {
-                    fps = accumFps/frameCounter;
+                    fps = accumFps / frameCounter;
                     frameCounter = 0;
                     accumFps = 0;
-                    fpsMeter.innerText = `FPS: ${fps.toFixed(1)}`
+                    fpsMeter.innerText = `FPS: ${fps.toFixed(1)}`;
                 }
             }
 
@@ -177,8 +204,9 @@
             offscreenContext.drawImage(video, offsetX, offsetY, targetWidth, targetHeight);
             const boxes = await detectObjectsOnFrame(offscreenContext);
             const validBoxes = [];
-            for (let i = 0; i < boxes.length; i += 6)
+            for (let i = 0; i < boxes.length; i += 6) {
                 if (boxes[i + 4] > 0) validBoxes.push([boxes[i], boxes[i + 1], boxes[i + 2], boxes[i + 3], boxes[i + 5]]);
+            }
             drawBoxes(offscreenCanvas, validBoxes, targetWidth, targetHeight, offsetX, offsetY);
             requestAnimationFrame(processFrame);
         }
