@@ -7,9 +7,6 @@
     <script type="module">
         import yolov8 from "./net_640.js"
         window.yolov8 = yolov8;
-        document.addEventListener('DOMContentLoaded', () => {
-            if (window.startProcessing) window.startProcessing();
-        });
     </script>
     <style>
         body {
@@ -185,10 +182,7 @@
             drawBoxes(offscreenCanvas, validBoxes, targetWidth, targetHeight, offsetX, offsetY);
             requestAnimationFrame(processFrame);
         }
-
-        window.startProcessing = function() {
-            requestAnimationFrame(processFrame);
-        };
+        requestAnimationFrame(processFrame);
 
         function drawBoxes(offscreenCanvas, boxes, targetWidth, targetHeight, offsetX, offsetY) {
             const ctx = document.querySelector("canvas").getContext("2d");
@@ -223,16 +217,9 @@
                 if (!device) {
                     wgpuError.style.display = "block";
                     loadingContainer.style.display = "none";
-                    return;
                 }
-                try {
-                    net = await window.yolov8.load(device, "./net.safetensors");
-                    loadingContainer.style.display = "none";
-                } catch (error) {
-                    loadingContainer.style.display = "none";
-                    wgpuError.style.display = "block";
-                    wgpuError.textContent = "Failed to load model."
-                }
+                net = await yolov8.load(device, "./net.safetensors");
+                loadingContainer.style.display = "none";
             }
             const input = await prepareInput(offscreenContext);
             const output = await net(new Float32Array(input));
@@ -261,7 +248,7 @@
             return await adapter.requestDevice({
                 requiredFeatures: ["shader-f16"],
                 powerPreference: "high-performance"
-            });
+		    });
         };
         
 
