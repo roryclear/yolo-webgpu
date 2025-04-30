@@ -5,18 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YOLOv8 tinygrad WebGPU</title>
     <script type="module">
-        window.onerror = function(message, source, lineno, colno, error) {
-            alert("Error: " + message + "\nSource: " + source + "\nLine: " + lineno + ", Column: " + colno);
-        };
-
-        window.onunhandledrejection = function(event) {
-            alert("Unhandled Promise rejection: " + (event.reason?.message || event.reason || "Unknown error"));
-        };
         import yolov8 from "./net_640.js"
         window.yolov8 = yolov8;
-        document.addEventListener('DOMContentLoaded', () => {
-            if (window.startProcessing) window.startProcessing();
-        });
     </script>
     <style>
         body {
@@ -148,62 +138,51 @@
         }
 
         async function processFrame() {
-            try {
-                if (video.videoWidth == 0 || video.videoHeight == 0) {
-                    requestAnimationFrame(processFrame);
-                    return;
-                }
-
-                // FPS calculation
-                if (!lastCalledTime) {
-                    lastCalledTime = performance.now();
-                    fps = 0;
-                } else {
-                    const now = performance.now();
-                    let delta = (now - lastCalledTime) / 1000.0;
-                    lastCalledTime = now;
-                    accumFps += 1 / delta;
-
-                    if (frameCounter++ >= 10) {
-                        fps = accumFps / frameCounter;
-                        frameCounter = 0;
-                        accumFps = 0;
-                        fpsMeter.innerText = `FPS: ${fps.toFixed(1)}`;
-                    }
-                }
-
-                const videoAspectRatio = video.videoWidth / video.videoHeight;
-                let targetWidth, targetHeight;
-
-                if (videoAspectRatio > 1) {
-                    targetWidth = modelInputSize;
-                    targetHeight = modelInputSize / videoAspectRatio;
-                } else {
-                    targetHeight = modelInputSize;
-                    targetWidth = modelInputSize * videoAspectRatio;
-                }
-
-                const offsetX = (modelInputSize - targetWidth) / 2;
-                const offsetY = (modelInputSize - targetHeight) / 2;
-                offscreenContext.clearRect(0, 0, modelInputSize, modelInputSize);
-                offscreenContext.drawImage(video, offsetX, offsetY, targetWidth, targetHeight);
-
-                const boxes = await detectObjectsOnFrame(offscreenContext);
-                const validBoxes = [];
-                for (let i = 0; i < boxes.length; i += 6)
-                    if (boxes[i + 4] > 0) validBoxes.push([boxes[i], boxes[i + 1], boxes[i + 2], boxes[i + 3], boxes[i + 5]]);
-
-                drawBoxes(offscreenCanvas, validBoxes, targetWidth, targetHeight, offsetX, offsetY);
+            if (video.videoWidth == 0 || video.videoHeight == 0) {
                 requestAnimationFrame(processFrame);
-            } catch (e) {
-                alert("processFrame error: " + (e.message || e));
+                return;
             }
-        }
 
+            if (!lastCalledTime) {
+                lastCalledTime = performance.now();
+                fps = 0;
+            } else {
+                const now = performance.now();
+                delta = (now - lastCalledTime)/1000.0;
+                lastCalledTime = now;
+                accumFps += 1/delta;
 
-        window.startProcessing = function() {
+                if (frameCounter++ >= 10) {
+                    fps = accumFps/frameCounter;
+                    frameCounter = 0;
+                    accumFps = 0;
+                    fpsMeter.innerText = `FPS: ${fps.toFixed(1)}`
+                }
+            }
+
+            const videoAspectRatio = video.videoWidth / video.videoHeight;
+            let targetWidth, targetHeight;
+
+            if (videoAspectRatio > 1) {
+                targetWidth = modelInputSize;
+                targetHeight = modelInputSize / videoAspectRatio;
+            } else {
+                targetHeight = modelInputSize;
+                targetWidth = modelInputSize * videoAspectRatio;
+            }
+
+            const offsetX = (modelInputSize - targetWidth) / 2;
+            const offsetY = (modelInputSize - targetHeight) / 2;
+            offscreenContext.clearRect(0, 0, modelInputSize, modelInputSize);
+            offscreenContext.drawImage(video, offsetX, offsetY, targetWidth, targetHeight);
+            const boxes = await detectObjectsOnFrame(offscreenContext);
+            const validBoxes = [];
+            for (let i = 0; i < boxes.length; i += 6)
+                if (boxes[i + 4] > 0) validBoxes.push([boxes[i], boxes[i + 1], boxes[i + 2], boxes[i + 3], boxes[i + 5]]);
+            drawBoxes(offscreenCanvas, validBoxes, targetWidth, targetHeight, offsetX, offsetY);
             requestAnimationFrame(processFrame);
-        };
+        }
+        requestAnimationFrame(processFrame);
 
         function drawBoxes(offscreenCanvas, boxes, targetWidth, targetHeight, offsetX, offsetY) {
             const ctx = document.querySelector("canvas").getContext("2d");
@@ -233,36 +212,37 @@
         }
 
         async function detectObjectsOnFrame(offscreenContext) {
-            try {
-                if (!net) {
-                    let device = await getDevice();
-                    if (!device) {
-                        wgpuError.style.display = "block";
-                        loadingContainer.style.display = "none";
-                        alert("WebGPU not supported or device acquisition failed.");
-                        return [];
-                    }
+            if (!net) {
+                const device = await getDevice();
+                if (!device) {
+                    wgpuError.style.display = "block";
+                    loadingContainer.style.display = "none";
+                    return [];
+                }
+
+                for (let i = 0; i < 3; i++) {
                     try {
-                        net = await window.yolov8.load(device, "./net.safetensors");
-                        loadingContainer.style.display = "none";
-                    } catch (error) {
-                        loadingContainer.style.display = "none";
-                        wgpuError.style.display = "block";
-                        wgpuError.textContent = "Failed to load model.";
-                        alert("Model loading failed: " + (error.message || error));
-                        return [];
+                        net = await yolov8.load(device, "./net.safetensors");
+                        break;
+                    } catch (_) {
+                        await new Promise(r => setTimeout(r, 500));
                     }
                 }
 
-                const input = await prepareInput(offscreenContext);
-                const output = await net(new Float32Array(input));
-                return output[0];
-            } catch (err) {
-                alert("detectObjectsOnFrame error: " + (err.message || err));
-                return [];
-            }
-        }
+                if (!net) {
+                    wgpuError.textContent = "Failed to load model";
+                    wgpuError.style.display = "block";
+                    loadingContainer.style.display = "none";
+                    return [];
+                }
 
+                loadingContainer.style.display = "none";
+            }
+
+            const input = await prepareInput(offscreenContext);
+            const output = await net(new Float32Array(input));
+            return output[0];
+        }
 
         async function prepareInput(offscreenContext) {
             return new Promise(resolve => {
@@ -281,22 +261,12 @@
         }
 
         const getDevice = async () => {
-            if (!navigator.gpu) {
-                wgpuError.style.display = "block";
-                loadingContainer.style.display = "none";
-                return;
-            }
-            try {
+            if (!navigator.gpu) return false;
             const adapter = await navigator.gpu.requestAdapter();
             return await adapter.requestDevice({
                 requiredFeatures: ["shader-f16"],
                 powerPreference: "high-performance"
-            });
-            } catch(err){
-                wgpuError.style.display = "block";
-                loadingContainer.style.display = "none";
-                return;
-            }
+		    });
         };
         
 
