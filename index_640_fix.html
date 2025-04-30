@@ -213,26 +213,12 @@
 
         async function detectObjectsOnFrame(offscreenContext) {
             if (!net) {
-                alert("getting device");
                 let device = await getDevice();
-                alert("got device!");
                 if (!device) {
                     wgpuError.style.display = "block";
                     loadingContainer.style.display = "none";
                 }
-                let retries = 3;
-                while (retries--) {
-                    try {
-                        alert("loading started");
-                        net = await yolov8.load(device, "./net.safetensors");
-                        alert("loaded!");
-                        break;
-                    } catch (e) {
-                        alert(`load failed: ${e}`);
-                        if (!retries) throw e;
-                        await new Promise(r => setTimeout(r, 1000));
-                    }
-                }
+                net = await yolov8.load(device, "./net.safetensors");
                 loadingContainer.style.display = "none";
             }
             const input = await prepareInput(offscreenContext);
@@ -259,11 +245,8 @@
         const getDevice = async () => {
             if (!navigator.gpu) return false;
             const adapter = await navigator.gpu.requestAdapter();
-            return await adapter.requestDevice({
-                powerPreference: "high-performance"
-            });
+            return await adapter.requestDevice();
         };
-
 
         const yolo_classes = [
             'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat',
