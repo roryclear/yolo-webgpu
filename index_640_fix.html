@@ -7,6 +7,9 @@
     <script type="module">
         import yolov8 from "./net_640.js"
         window.yolov8 = yolov8;
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.startProcessing) window.startProcessing();
+        });
     </script>
     <style>
         body {
@@ -182,7 +185,10 @@
             drawBoxes(offscreenCanvas, validBoxes, targetWidth, targetHeight, offsetX, offsetY);
             requestAnimationFrame(processFrame);
         }
-        requestAnimationFrame(processFrame);
+
+        window.startProcessing = function() {
+            requestAnimationFrame(processFrame);
+        };
 
         function drawBoxes(offscreenCanvas, boxes, targetWidth, targetHeight, offsetX, offsetY) {
             const ctx = document.querySelector("canvas").getContext("2d");
@@ -213,17 +219,20 @@
 
         async function detectObjectsOnFrame(offscreenContext) {
             if (!net) {
-                alert("getting device");
                 let device = await getDevice();
-                alert("got device");
                 if (!device) {
                     wgpuError.style.display = "block";
                     loadingContainer.style.display = "none";
+                    return;
                 }
-                alert("loading net");
-                net = await yolov8.load(device, "./net.safetensors");
-                alert("got net");
-                loadingContainer.style.display = "none";
+                try {
+                    net = await window.yolov8.load(device, "./net.safetensors");
+                    loadingContainer.style.display = "none";
+                } catch (error) {
+                    loadingContainer.style.display = "none";
+                    wgpuError.style.display = "block";
+                    wgpuError.textContent = "Failed to load model."
+                }
             }
             const input = await prepareInput(offscreenContext);
             const output = await net(new Float32Array(input));
@@ -249,8 +258,12 @@
         const getDevice = async () => {
             if (!navigator.gpu) return false;
             const adapter = await navigator.gpu.requestAdapter();
-            return await adapter.requestDevice();
+            return await adapter.requestDevice({
+                requiredFeatures: ["shader-f16"],
+                powerPreference: "high-performance"
+            });
         };
+        
 
         const yolo_classes = [
             'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat',
