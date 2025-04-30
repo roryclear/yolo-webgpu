@@ -203,7 +203,7 @@
                 const adjustedY2 = (y2 - offsetY) * scaleY;
                 const boxWidth = adjustedX2 - adjustedX1;
                 const boxHeight = adjustedY2 - adjustedY1;
-                ctx.strokeRe  const getDevice = asynct(adjustedX1, adjustedY1, boxWidth, boxHeight);
+                ctx.strokeRect(adjustedX1, adjustedY1, boxWidth, boxHeight);
                 const textWidth = ctx.measureText(label).width;
                 ctx.fillRect(adjustedX1, adjustedY1 - 25, textWidth + 10, 25);
                 ctx.fillStyle = "#FFFFFF";
