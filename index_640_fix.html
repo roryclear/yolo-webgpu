@@ -213,7 +213,9 @@
 
         async function detectObjectsOnFrame(offscreenContext) {
             if (!net) {
+                alert("getting device");
                 let device = await getDevice();
+                alert("got device!");
                 if (!device) {
                     wgpuError.style.display = "block";
                     loadingContainer.style.display = "none";
