@@ -213,44 +213,20 @@
 
         async function detectObjectsOnFrame(offscreenContext) {
             if (!net) {
-                alert("Attempting to get WebGPU device...");
-                const device = await getDevice();
+                let device = await getDevice();
                 if (!device) {
-                    alert("WebGPU device NOT available");
                     wgpuError.style.display = "block";
                     loadingContainer.style.display = "none";
-                    return [];
                 }
-                alert("WebGPU device acquired");
-
-                for (let i = 0; i < 3; i++) {
-                    alert(`Attempting to load model (try ${i + 1})...`);
-                    try {
-                        net = await yolov8.load(device, "./net.safetensors");
-                        alert("Model loaded successfully");
-                        break;
-                    } catch (err) {
-                        alert(`Model load failed (try ${i + 1})`);
-                        await new Promise(r => setTimeout(r, 500));
-                    }
-                }
-
-                if (!net) {
-                    alert("Model loading failed after 3 attempts");
-                    wgpuError.textContent = "Failed to load model";
-                    wgpuError.style.display = "block";
-                    loadingContainer.style.display = "none";
-                    return [];
-                }
-
+                alert("loading started");
+                net = await yolov8.load(device, "./net.safetensors");
+                alert("loaded!");
                 loadingContainer.style.display = "none";
             }
-
             const input = await prepareInput(offscreenContext);
             const output = await net(new Float32Array(input));
             return output[0];
         }
-
 
         async function prepareInput(offscreenContext) {
             return new Promise(resolve => {
@@ -269,29 +245,14 @@
         }
 
         const getDevice = async () => {
-            if (!navigator.gpu) {
-                alert("WebGPU not supported");
-                return false;
-            }
-
+            if (!navigator.gpu) return false;
             const adapter = await navigator.gpu.requestAdapter();
-            if (!adapter) {
-                alert("No GPU adapter found");
-                return false;
-            }
-
-            const features = Array.from(adapter.features.values());
-
-            if (!features.includes("shader-f16")) {
-                alert("shader-f16 not supported, skipping it");
-                return await adapter.requestDevice({ powerPreference: "high-performance" });
-            }
-
             return await adapter.requestDevice({
                 requiredFeatures: ["shader-f16"],
                 powerPreference: "high-performance"
-            });
-        }
+		    });
+        };
+        
 
         const yolo_classes = [
             'person', 'bicycle', 'car', 'motorcycle', 'airplane', 'bus', 'train', 'truck', 'boat',
