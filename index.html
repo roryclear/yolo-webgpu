@@ -136,8 +136,15 @@
                     canvas.height = video.clientHeight;
                 };
             };
-            tryCamera("environment").then(handle).catch(() => tryCamera("user").then(handle).catch(e => console.error("No camera:", e)));
+            tryCamera("environment").then(handle).catch(() => 
+                tryCamera("user").then(handle).catch(e => {
+                    wgpuError.textContent = "Error: Could not access camera."
+                    wgpuError.style.display = "block";
+                    loadingContainer.style.display = "none";
+                })
+            );
         }
+
 
         async function processFrame() {
             if (video.videoWidth == 0 || video.videoHeight == 0) {
